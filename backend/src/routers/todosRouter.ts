@@ -51,13 +51,15 @@ class TodosController {
   createList(req: Request, res: Response) {
     const { title } = req.body;
     const id = uuid();
-    const newTaskList: TaskList = { id, title, tasks: new Map() };
+    const newTaskList: TaskList = { id, title, tasks: [] };
     this.taskLists.set(id, newTaskList);
+    console.log(this.taskLists)
     res.status(201).json(newTaskList);
   }
 
   getLists(req: Request, res: Response) {
     res.json(Array.from(this.taskLists.values()));
+    console.log(this.taskLists)
   }
 
   deleteList(req: Request, res: Response) {
@@ -67,6 +69,8 @@ class TodosController {
     } else {
       res.status(404).send('Task list not found');
     }
+    console.log(this.taskLists)
+
   }
 
   updateList(req: Request, res: Response) {
@@ -79,6 +83,8 @@ class TodosController {
     } else {
       res.status(404).send('Task list not found');
     }
+    console.log(this.taskLists)
+
   }
   // END LISTS OPERATIONS
 
@@ -90,11 +96,13 @@ class TodosController {
     if (taskList) {
       const taskId = uuid();
       const newTask: Task = { id: taskId, name, due: new Date(due), completed: false };
-      taskList.tasks.set(taskId, newTask);
+      taskList.tasks.unshift(newTask);
       res.status(201).json(newTask);
     } else {
       res.status(404).send('Task list not found');
     }
+    console.log(this.taskLists)
+
   }
 
   updateTask(req: Request, res: Response) {
@@ -102,7 +110,7 @@ class TodosController {
     const { name, due, completed } = req.body;
     const taskList = this.taskLists.get(taskListId);
     if (taskList) {
-      const task = taskList.tasks.get(taskId);
+      const task = taskList.tasks.find(task => task.id === taskId);
       if (task) {
         task.name = name || task.name;
         task.due = due ? new Date(due) : task.due;
@@ -114,13 +122,18 @@ class TodosController {
     } else {
       res.status(404).send('Task list not found');
     }
+    console.log(this.taskLists)
+
   }
 
   deleteTask(req: Request, res: Response) {
     const { taskListId, taskId } = req.params;
     const taskList = this.taskLists.get(taskListId);
     if (taskList) {
-      if (taskList.tasks.delete(taskId)) {
+      const filteredTasks = taskList.tasks.filter(task => task.id !== taskId);
+      if (filteredTasks.length < taskList.tasks.length) {
+        taskList.tasks = filteredTasks;
+        this.taskLists.set(taskListId, taskList);
         res.status(204).send();
       } else {
         res.status(404).send('Task not found');
@@ -128,7 +141,12 @@ class TodosController {
     } else {
       res.status(404).send('Task list not found');
     }
+
+    // Log the updated taskLists after the response is sent
+    setImmediate(() => console.log(this.taskLists));
   }
+
+
   // END TASK OPERATIONS
 }
 

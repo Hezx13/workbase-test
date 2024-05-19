@@ -8,5 +8,5 @@ export type Task = {
   export type TaskList = {
     id: string;
     title: string;
-    tasks: Map<string, Task>;
+    tasks: Task[];
   };
