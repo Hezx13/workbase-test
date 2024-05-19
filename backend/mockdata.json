@@ -1,0 +1,40 @@
+{
+    "taskLists": [
+      {
+        "id": "1",
+        "title": "Work Tasks",
+        "tasks": {
+          "task1": {
+            "id": "task1",
+            "name": "Finish report",
+            "due": "2024-05-20T12:00:00Z",
+            "completed": false
+          },
+          "task2": {
+            "id": "task2",
+            "name": "Prepare presentation",
+            "due": "2024-05-25T09:00:00Z",
+            "completed": false
+          }
+        }
+      },
+      {
+        "id": "2",
+        "title": "Personal Tasks",
+        "tasks": {
+          "task3": {
+            "id": "task3",
+            "name": "Grocery shopping",
+            "due": "2024-05-22T18:00:00Z",
+            "completed": false
+          },
+          "task4": {
+            "id": "task4",
+            "name": "Go to gym",
+            "due": "2024-05-21T17:00:00Z",
+            "completed": false
+          }
+        }
+      }
+    ]
+  }

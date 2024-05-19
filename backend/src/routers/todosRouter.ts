@@ -1,6 +1,8 @@
 import { Request, Response, Router } from 'express';
 import { v4 as uuid } from 'uuid';
 import { Task, TaskList } from '../types';
+import fs from 'fs';
+import path from 'path';
 
 class TodosController {
   public router = Router();
@@ -9,6 +11,28 @@ class TodosController {
   constructor() {
     this.initializeRoutes();
     this.taskLists = new Map()
+
+    try {
+        const filePath = path.join(__dirname, '../../mockdata.json');
+        const fileData = fs.readFileSync(filePath, 'utf8');
+        const jsonData = JSON.parse(fileData);
+        
+        if (jsonData.taskLists && Array.isArray(jsonData.taskLists)) {
+            //@ts-ignore
+          jsonData.taskLists.forEach(taskList => {
+            const id: string = uuid();
+            this.taskLists.set(id, {
+              ...taskList,
+              id: id,
+            });
+          });
+        } else {
+          console.error('JSON file does not contain taskLists.');
+        }
+      } catch (error: any) {
+        console.error('Error reading or parsing JSON file:', error.message);
+      }
+
   }
 
   private initializeRoutes() {
