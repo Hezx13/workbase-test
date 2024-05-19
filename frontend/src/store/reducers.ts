@@ -27,24 +27,36 @@ const taskListsReducer = (state = initialTaskListsState, action: any): TaskLists
         return { taskLists: rest };
     
 
-    case actions.ADD_TASK_SUCCESS:
-    case actions.UPDATE_TASK_SUCCESS:
-    case actions.DELETE_TASK_SUCCESS: {
-      const { taskListId, newTask } = action.payload;
-      const taskList = state.taskLists[taskListId];
-      if (taskList) {
-        let updatedTasks = taskList.tasks;
-        const taskIndex = updatedTasks.findIndex(task => task.id === newTask.id);
-        if (action.type === actions.ADD_TASK_SUCCESS || action.type === actions.UPDATE_TASK_SUCCESS) {
-          updatedTasks[taskIndex] = newTask;
+        case actions.ADD_TASK_SUCCESS:
+          case actions.UPDATE_TASK_SUCCESS:
+          case actions.DELETE_TASK_SUCCESS: {
+            const { taskListId, newTask, taskId } = action.payload;
+            const taskList = state.taskLists[taskListId];
+            if (taskList) {
+              let updatedTasks;
+              if (action.type === actions.ADD_TASK_SUCCESS) {
+                updatedTasks = [...taskList.tasks, newTask];
+              } else if (action.type === actions.UPDATE_TASK_SUCCESS) {
+                updatedTasks = taskList.tasks.map(task => 
+                  task.id === newTask.id ? newTask : task
+                );
+              } else if (action.type === actions.DELETE_TASK_SUCCESS) {
+                updatedTasks = taskList.tasks.filter(task => task.id !== taskId);
+              }
           
-        } else if (action.type === actions.DELETE_TASK_SUCCESS) {
-          delete updatedTasks[taskIndex];
-        }
-        return { taskLists: { ...state.taskLists, [taskListId]: { ...taskList, tasks: updatedTasks } } };
-      }
-      return state;
-    }
+              return { 
+                taskLists: { 
+                  ...state.taskLists, 
+                  [taskListId]: { 
+                    ...taskList, 
+                    tasks: updatedTasks 
+                  } 
+                } 
+              };
+            }
+            return state;
+          }
+          
 
     default:
       return state;
