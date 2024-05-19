@@ -1,6 +1,8 @@
-import React from 'react';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { styled } from '@mui/system';
+import { getLists } from '../api/todos-api';
+import { useEffect, useState } from 'react';
+import { TaskList } from '../types';
 
 const StyledContainer = styled(Box)({
   display: 'flex',
@@ -41,33 +43,36 @@ const Task = styled(Typography)({
 });
 
 const TodoContainer = () => {
-  // Dummy data for lists and tasks
-  const lists = [
-    { id: 11, title: 'To Do', tasks: ['Task 1', 'Task 2', 'Task 3'] },
-    { id: 1, title: 'To Do', tasks: ['Task 1', 'Task 2', 'Task 3'] },
-    { id: 17, title: 'To Do', tasks: ['Task 1', 'Task 2', 'Task 3'] },
-    { id: 2, title: 'In Progress', tasks: ['Task 4', 'Task 5'] },
-    { id: 3, title: 'Done', tasks: ['Task 6'] },
-  ];
+  const [lists, setLists] = useState<TaskList[]>([])
+
+  useEffect(()=>{
+    get()
+  },[])
+
+  const get = async ()=>{
+    const res = await getLists()
+    console.log(res)
+    setLists(res)
+  }
 
   return (
     <StyledContainer>
-      {lists.map((list) => (
-        <List key={list.id}>
-          <Typography variant="h6" gutterBottom>
-            {list.title}
-          </Typography>
-          {list.tasks.map((task, index) => (
-            <Task key={index} variant="body1">
-              {task}
-            </Task>
-          ))}
-        </List>
-      ))}
-      <Button>
-        Add list
-      </Button>
-    </StyledContainer>
+    {lists.map((list) => (
+      <List key={list.id}>
+        <Typography variant="h6" gutterBottom>
+          {list.title}
+        </Typography>
+        {Object.values(list.tasks).map((task) => ( // Use Object.values() to iterate over task objects
+          <Task key={task.id} variant="body1">
+            {task.name}
+          </Task>
+        ))}
+      </List>
+    ))}
+    <Button>
+      Add list
+    </Button>
+  </StyledContainer>
   );
 };
 

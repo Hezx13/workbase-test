@@ -11,7 +11,7 @@ class TodosController {
   constructor() {
     this.initializeRoutes();
     this.taskLists = new Map()
-
+    //MOCK DATA BLOCK
     try {
         const filePath = path.join(__dirname, '../../mockdata.json');
         const fileData = fs.readFileSync(filePath, 'utf8');
