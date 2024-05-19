@@ -62,7 +62,7 @@ const TodoContainer = () => {
         <Typography variant="h6" gutterBottom>
           {list.title}
         </Typography>
-        {Object.values(list.tasks).map((task) => ( // Use Object.values() to iterate over task objects
+        {Object.values(list.tasks).map((task) => (
           <Task key={task.id} variant="body1">
             {task.name}
           </Task>
